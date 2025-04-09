@@ -10,6 +10,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      S3ACCESSKEY: ${{ secrets.S3ACCESSKEY }}
+      S3SECRETKEY: ${{ secrets.S3SECRETKEY }}
+      REGION: ${{ secrets.REGION }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
