@@ -2,13 +2,12 @@ package com.example.video.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.example.video.dto.DeleteRequestDTO;
 import com.example.video.dto.UploadRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -20,6 +19,9 @@ public class S3service {
 
     @Value("${BUCKETNAME}")
     private String bucket;
+
+    @Value("${REGION}")
+    private String region;
 
     public String upload(@ModelAttribute UploadRequestDTO request) throws IOException {
 
@@ -37,5 +39,16 @@ public class S3service {
         return fileUrl;
     }
 
+    public void delete(DeleteRequestDTO request){
+        String bucketUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/";
+        String imageUrl=request.getImageUrl();
 
+        if (!imageUrl.startsWith(bucketUrl)) {
+            throw new IllegalArgumentException("Invalid S3 image URL.");
+        }
+
+        String objectKey = imageUrl.substring(bucketUrl.length());
+
+        amazonS3.deleteObject(bucket, objectKey);
+    }
 }
