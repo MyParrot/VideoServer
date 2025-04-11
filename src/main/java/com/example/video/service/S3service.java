@@ -3,6 +3,7 @@ package com.example.video.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.video.dto.DeleteRequestDTO;
+import com.example.video.dto.ReadUserImageDTO;
 import com.example.video.dto.UploadRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -50,5 +53,11 @@ public class S3service {
         String objectKey = imageUrl.substring(bucketUrl.length());
 
         amazonS3.deleteObject(bucket, objectKey);
+    }
+
+    public List<String> readUserImage(ReadUserImageDTO request){
+        List<String>url=new ArrayList<>();
+
+        return url;
     }
 }
