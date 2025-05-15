@@ -1,6 +1,7 @@
 package com.example.video.controller;
 
 import com.example.video.dto.DeleteRequestDTO;
+import com.example.video.dto.ReadUserImageDTO;
 import com.example.video.dto.UploadRequestDTO;
 import com.example.video.global.ResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.video.service.S3service;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/s3")
@@ -29,4 +31,9 @@ public class S3controller {
         return ResponseEntity.ok(new ResponseDto<>("success delete"));
     }
 
+    @GetMapping("/ReadImage")
+    public ResponseEntity<?> readImage(@RequestBody ReadUserImageDTO request){
+        List<String> UserImageUrl=s3service.readUserImage(request);
+        return ResponseEntity.ok(new ResponseDto<>(UserImageUrl));
+    }
 }

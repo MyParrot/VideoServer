@@ -1,15 +1,21 @@
 package com.example.video.service;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.video.dto.DeleteRequestDTO;
+import com.example.video.dto.ReadUserImageDTO;
 import com.example.video.dto.UploadRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -50,5 +56,19 @@ public class S3service {
         String objectKey = imageUrl.substring(bucketUrl.length());
 
         amazonS3.deleteObject(bucket, objectKey);
+    }
+
+    public List<String> readUserImage(ReadUserImageDTO request){
+        List<String>url=new ArrayList<>();
+
+        String prefix = request.getUserName() + "/";
+        ListObjectsV2Request listRequest = new ListObjectsV2Request()
+                .withBucketName(bucket)
+                .withPrefix(prefix);
+
+        return amazonS3.listObjectsV2(listRequest).getObjectSummaries().stream()
+                .map(S3ObjectSummary::getKey)
+                .map(key -> "https://" + bucket + ".s3.amazonaws.com/" + key)
+                .collect(Collectors.toList());
     }
 }
